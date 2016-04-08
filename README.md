@@ -4,8 +4,48 @@ Description of codec configurations used to characterise codec step response
 
 ## x264
 
+  x264_param_default_preset(&params, "ultrafast", "zerolatency");
+
+  VLOG(2) << "Default level: " << params.i_level_idc;
+  params.i_threads = 1;
+  params.i_width = m_in.getWidth();
+  params.i_height = m_in.getHeight();
+  // FIXME: we use doubles (won't work for 12.5)
+  params.i_fps_num = (int)m_in.getFps();
+  params.i_fps_den = 1;
+
+  // for debugging
+#if 0
+  params.i_log_level = X264_LOG_DEBUG;
+#endif
+  // disables periodic IDR frames
+  params.i_keyint_max = X264_KEYINT_MAX_INFINITE;
+  params.rc.i_rc_method = X264_RC_ABR ;
+  params.rc.i_bitrate = m_uiTargetBitrate;
+
+  switch (m_uiMode)
+  {
+    // STD
+    case 0:
+    {
+      break;
+    }
+    // CBR
+    case 2:
+    {
+      VLOG(2) << "CBR mode!";
+      params.rc.i_vbv_buffer_size = m_uiTargetBitrate;
+      params.rc.i_vbv_max_bitrate = m_uiTargetBitrate*m_dCbrFactor;
+      params.rc.f_rate_tolerance = 1.0 ;
+      break;
+    }
+  }
+```
+
 ## openH264
 ```
+  ISVCEncoder* m_pCodec;
+  ...
   SEncParamExt param;
   m_pCodec->GetDefaultParams (&param);
   param.iUsageType = CAMERA_VIDEO_REAL_TIME;
@@ -16,15 +56,8 @@ Description of codec configurations used to characterise codec step response
   //param.bEnableDenoise = denoise;
   param.bEnableDenoise = false;
   param.iSpatialLayerNum = 1;
-  //SM_DYN_SLICE don't support multi-thread now
-#if 0
-  if (sliceMode != SM_SINGLE_SLICE && sliceMode != SM_DYN_SLICE)
-      param.iMultipleThreadIdc = 2;
-#endif
-  // RG: this prevents IDR generation on scene change
-#if 1
+  // prevents IDR generation on scene change
   param.bEnableSceneChangeDetect = false;
-#endif
   param.bEnableFrameSkip = false;
   for (int i = 0; i < param.iSpatialLayerNum; i++) {
       param.sSpatialLayers[i].iVideoWidth = m_in.getWidth() >> (param.iSpatialLayerNum - 1 - i);
