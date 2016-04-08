@@ -3,7 +3,7 @@
 Description of codec configurations used to characterise codec step response
 
 ## x264
-
+```
   x264_param_default_preset(&params, "ultrafast", "zerolatency");
 
   VLOG(2) << "Default level: " << params.i_level_idc;
