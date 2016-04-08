@@ -79,10 +79,52 @@ Description of codec configurations used to characterise codec step response
   m_pCodec->SetOption (ENCODER_OPTION_DATAFORMAT, &videoFormat);
 ```
 
-## VPP-Cbr
+## VPP
 
-## VPP-Pow
+```
+  ICodecv2* pCodec;
+  ...
 
-## VPP-Log
+  //Set default quality to 16
+  pCodec->SetParameter("quality", "16");
+  pCodec->SetParameter("incolour", D_IN_COLOUR_YUV420P8);
+  // This multiplies the bit size of every i-frame by 2
+  pCodec->SetParameter("ipicturemultiplier", "1");
+  pCodec->SetParameter("switchframeperiod", "12");
 
+  // default rate control values
+  pCodec->SetParameter("max bits per frame", "100000000");
+  pCodec->SetParameter("num rate control frames", "16");
+  pCodec->SetParameter("max distortion", "30000");
+  pCodec->SetParameter("ipicture dmax multiper", "2");
+  pCodec->SetParameter("ipicture dmax fraction", "0");
+  pCodec->SetParameter("minimum intra qp", "16");
+  pCodec->SetParameter("minimum inter qp", "4");
+  pCodec->SetParameter("rate overshoot percent", "100");
+
+  // always flip the image on windows to get it into the desired YUV format
+  pCodec->SetParameter("flip", "1");
+  pCodec->SetParameter("unrestrictedmotion", "1");
+  pCodec->SetParameter("extendedpicturetype", "1");
+  pCodec->SetParameter("unrestrictedmotion", "1");
+  pCodec->SetParameter("advancedintracoding", "1");
+  pCodec->SetParameter("alternativeintervlc", "1");
+  pCodec->SetParameter("modifiedquant", "1");
+  pCodec->SetParameter("autoipicture", "1");
+  pCodec->SetParameter("ipicturefraction", "0");
+```
+### VPP-Cbr
+```
+  pCodec->SetParameter("mode of operation", "1");
+```
+### VPP-Pow
+```
+  pCodec->SetParameter("mode of operation", "2");
+  pCodec->SetParameter("rate control model type", "1");
+```
+### VPP-Log
+```
+  pCodec->SetParameter("mode of operation", "2");
+  pCodec->SetParameter("rate control model type", "2");
+```
 
