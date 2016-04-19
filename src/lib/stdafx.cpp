@@ -17,10 +17,4 @@ along with rtp++.  If not, see <http://www.gnu.org/licenses/>.
 **********/
 // "CSIR"
 // Copyright (c) 2016 CSIR.  All rights reserved.
-#pragma once
-
-/// rtp++ version info
-/// 0.0.1 - Initial open source version
-
-#define RTP_PLUS_PLUS_VERSION_STRING "0.0.1"
-
+#include "stdafx.h"
