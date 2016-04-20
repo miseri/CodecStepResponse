@@ -25,9 +25,8 @@ namespace rtp_plus_plus
 {
 namespace media
 {
-const size_t READ_SIZE=20000u;
 
-YuvMediaSource::YuvMediaSource(const std::string& sFilename, const uint32_t uiWidth, const uint32_t uiHeight, bool bLoopSource, uint32_t uiLoopCount, uint32_t uiInitialBufferSize)
+YuvMediaSource::YuvMediaSource(const std::string& sFilename, const uint32_t uiWidth, const uint32_t uiHeight, bool bLoopSource, uint32_t uiLoopCount)
   :m_in(sFilename.c_str() , std::ifstream::in | std::ifstream::binary),
     m_rIn(m_in),
     m_eType(MT_YUV_420P),
@@ -38,8 +37,8 @@ YuvMediaSource::YuvMediaSource(const std::string& sFilename, const uint32_t uiWi
     m_bLoopSource(bLoopSource),
     m_uiLoopCount(uiLoopCount),
     m_uiCurrentLoop(0),
-    m_uiYuvFrameSize(uiWidth * uiHeight * 1.5),
-    m_uiTotalFrames(0),
+    m_uiYuvFrameSize(static_cast<std::size_t>(uiWidth * uiHeight * 1.5)),
+    m_iTotalFrames(0),
     m_uiCurrentFrame(0),
     m_buffer(new uint8_t[m_uiYuvFrameSize], m_uiYuvFrameSize)
 {
@@ -47,9 +46,7 @@ YuvMediaSource::YuvMediaSource(const std::string& sFilename, const uint32_t uiWi
   parseStream();
 }
 
-
-
-YuvMediaSource::YuvMediaSource(std::istream& in1, const uint32_t uiWidth, const uint32_t uiHeight, bool bLoopSource, uint32_t uiLoopCount, uint32_t uiInitialBufferSize)
+YuvMediaSource::YuvMediaSource(std::istream& in1, const uint32_t uiWidth, const uint32_t uiHeight, bool bLoopSource, uint32_t uiLoopCount)
   :m_rIn(in1),
     m_eType(MT_YUV_420P),
     m_uiWidth(uiWidth),
@@ -58,15 +55,14 @@ YuvMediaSource::YuvMediaSource(std::istream& in1, const uint32_t uiWidth, const 
     m_bLoopSource(bLoopSource),
     m_uiLoopCount(uiLoopCount),
     m_uiCurrentLoop(0),
-    m_uiYuvFrameSize(uiWidth * uiHeight * 1.5),
-    m_uiTotalFrames(0),
+    m_uiYuvFrameSize(static_cast<std::size_t>(uiWidth * uiHeight * 1.5)),
+    m_iTotalFrames(0),
     m_uiCurrentFrame(0),
     m_buffer(new uint8_t[m_uiYuvFrameSize], m_uiYuvFrameSize)
 {
   VLOG(2) << "YUV properties width: " << m_uiWidth
           << " height: " << m_uiHeight
-          << " YUV frame size: " << m_uiYuvFrameSize
-          << " Total frames: " << m_uiTotalFrames;
+          << " YUV frame size: " << m_uiYuvFrameSize;
 
   checkInputStream();
   parseStream();
@@ -103,7 +99,8 @@ std::vector<MediaSample> YuvMediaSource::readMediaSample()
 
 std::vector<MediaSample> YuvMediaSource::getNextAccessUnit()
 {
-  if (m_uiCurrentFrame < m_uiTotalFrames)
+  assert(m_iTotalFrames > 0);
+  if (m_uiCurrentFrame < m_iTotalFrames)
   {
     std::vector<MediaSample> vFrame = readMediaSample();
     ++m_uiCurrentFrame;
@@ -145,14 +142,15 @@ void YuvMediaSource::checkInputStream()
 
 void YuvMediaSource::parseStream()
 {
+  assert(m_uiYuvFrameSize != 0);
   m_rIn.seekg(0, std::ios_base::end);
-  size_t uiTotalFileSize = m_rIn.tellg();
+  std::streampos uiTotalFileSize = m_rIn.tellg();
   m_rIn.seekg(0, std::ios_base::beg);
-  m_uiTotalFrames = uiTotalFileSize / m_uiYuvFrameSize;
+  m_iTotalFrames = uiTotalFileSize / m_uiYuvFrameSize;
   VLOG(12) << "YUV properties width: " << m_uiWidth
           << " height: " << m_uiHeight
           << " YUV frame size: " << m_uiYuvFrameSize
-          << " Total frames: " << m_uiTotalFrames;
+          << " Total frames: " << m_iTotalFrames;
 }
 
 } // media

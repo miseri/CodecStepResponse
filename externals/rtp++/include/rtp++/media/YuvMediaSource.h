@@ -25,10 +25,8 @@ along with rtp++.  If not, see <http://www.gnu.org/licenses/>.
 #include <rtp++/media/MediaSource.h>
 #include <rtp++/util/Buffer.h>
 
-namespace rtp_plus_plus
-{
-namespace media
-{
+namespace rtp_plus_plus {
+namespace media {
 
 /**
  * @brief YUV media source
@@ -43,11 +41,10 @@ public:
    * @param[in] uiHeight Height of YUV media
    * @param[in] bLoopSource Configures the source to loop on end of stream
    * @param[in] uiLoopCount Configures the number of times the source is looped
-   * @param[in] uiInitialBufferSize Size of initial buffer to read media into. Should equal the size of a YUV frame.
    * IFF bLoopSource is true. A value of 0 means that the source will loop
    * indefinitely
    */
-  YuvMediaSource(const std::string& sFilename, const uint32_t uiWidth, const uint32_t uiHeight, bool bLoopSource, uint32_t uiLoopCount, uint32_t uiInitialBufferSize = 20000);
+  YuvMediaSource(const std::string& sFilename, const uint32_t uiWidth, const uint32_t uiHeight, bool bLoopSource, uint32_t uiLoopCount);
   /**
    * @brief YuvMediaSource
    * @param in1 A reference to the istream that has opened the Annex B stream
@@ -57,9 +54,8 @@ public:
    * @param uiLoopCount Configures the number of times the source is looped
    * IFF bLoopSource is true. A value of 0 means that the source will loop
    * indefinitely
-   * @param[in] uiInitialBufferSize Size of initial buffer to read media into. Should equal the size of a YUV frame.
    */
-  YuvMediaSource(std::istream& in1, const uint32_t uiWidth, const uint32_t uiHeight, bool bLoopSource, uint32_t uiLoopCount, uint32_t uiInitialBufferSize = 20000);
+  YuvMediaSource(std::istream& in1, const uint32_t uiWidth, const uint32_t uiHeight, bool bLoopSource, uint32_t uiLoopCount);
   /**
    * @brief isGood This method can be used to check if NAL units can be read. If the end of
    * stream is reached and the source is not configured to loop or if the maximum loop count
@@ -118,9 +114,9 @@ private:
   // Current loop
   uint32_t m_uiCurrentLoop;
   // frame size
-  uint32_t m_uiYuvFrameSize;
+  std::size_t m_uiYuvFrameSize;
   // total frames
-  uint32_t m_uiTotalFrames;
+  int64_t m_iTotalFrames;
   // current frame
   uint32_t m_uiCurrentFrame;
   // buffer to read data into
@@ -129,4 +125,3 @@ private:
 
 } // media
 } // rtp_plus_plus
-
