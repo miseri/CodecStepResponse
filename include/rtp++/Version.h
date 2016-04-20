@@ -21,6 +21,7 @@ along with rtp++.  If not, see <http://www.gnu.org/licenses/>.
 
 /// rtp++ version info
 /// 0.0.1 - Initial open source version
+/// 0.0.2 - Test
 
 #define RTP_PLUS_PLUS_VERSION_STRING "0.0.1"
 

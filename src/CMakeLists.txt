@@ -47,6 +47,11 @@ message("WARNING: Unknown/unsupported MSVC version")
 ENDIF(MSVC12)
 ENDIF(WIN32)
 
+IF (UNIX)
+message("Adding c++11 support to compiler")
+add_definitions(-std=c++11)
+ENDIF(UNIX)
+
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 # 64bit
   message("Detected 64-bit build - compiling with -fPIC")
@@ -207,6 +212,6 @@ ${rtp++_SOURCE_DIR}/../include
 #ADD_SUBDIRECTORY( Apps) 
 ADD_SUBDIRECTORY( lib) 
 #ADD_SUBDIRECTORY( Libs)
-#ADD_SUBDIRECTORY( Test )
+ADD_SUBDIRECTORY( test )
 #ADD_SUBDIRECTORY( Tools )
 
