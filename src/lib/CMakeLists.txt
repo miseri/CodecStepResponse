@@ -37,6 +37,8 @@ endif()
 SET(CORE_SRCS
 stdafx.cpp
 )
+SET(EXPERIMENTAL_SRCS
+)
 SET(MEDIA_SRCS
 media/YuvMediaSource.cpp
 )
@@ -47,7 +49,13 @@ SET(CORE_HEADERS
 stdafx.h
 ../../include/rtp++/Version.h
 )
+SET(EXPERIMENTAL_HEADERS
+../../include/rtp++/experimental/INetworkCodecCooperation.h
+)
 SET(MEDIA_HEADERS
+../../include/rtp++/media/IMediaTransform.h
+../../include/rtp++/media/IVideoCodecTransform.h
+../../include/rtp++/media/MediaDescriptor.h
 ../../include/rtp++/media/MediaSample.h
 ../../include/rtp++/media/MediaSource.h
 ../../include/rtp++/media/YuvMediaSource.h
@@ -55,25 +63,30 @@ SET(MEDIA_HEADERS
 SET(UTIL_HEADERS
 ../../include/rtp++/util/Base64.h
 ../../include/rtp++/util/Buffer.h
+../../include/rtp++/util/Conversion.h
 )
 SET(RTP_SRCS
 ${CORE_SRCS} 
+${EXPERIMENTAL_SRCS} 
 ${MEDIA_SRCS}
 ${UTIL_SRCS}
 )
 
 SOURCE_GROUP("Source Files\\core" FILES ${CORE_SRCS})
+SOURCE_GROUP("Source Files\\experimental" FILES ${EXPERIMENTAL_SRCS})
 SOURCE_GROUP("Source Files\\media" FILES ${MEDIA_SRCS})
 SOURCE_GROUP("Source Files\\util" FILES ${UTIL_SRCS})
 
 
 SOURCE_GROUP("Header Files\\core" FILES ${CORE_HEADERS})
+SOURCE_GROUP("Header Files\\experimental" FILES ${EXPERIMENTAL_HEADERS})
 SOURCE_GROUP("Header Files\\media" FILES ${MEDIA_HEADERS})
 SOURCE_GROUP("Header Files\\util" FILES ${UTIL_HEADERS})
 
 
 SET(RTP_HEADERS 
 ${CORE_HEADERS}
+${EXPERIMENTAL_HEADERS} 
 ${MEDIA_HEADERS}
 ${UTIL_HEADERS}
 )
@@ -93,7 +106,7 @@ else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 # 32 bit
 endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
-# ADD_MSVC_PRECOMPILED_HEADER("CorePch.h" "CorePch.cpp" CORE_SRCS)
+# ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" CORE_SRCS)
 
 ADD_LIBRARY( rtp++ STATIC ${RTP_SRCS} ${RTP_HEADERS})
 
