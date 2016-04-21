@@ -1,4 +1,4 @@
-# CodecStepResponse
+# Codec Step Response
 
 Description of codec configurations used to characterise codec step response
 
